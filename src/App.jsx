@@ -59,6 +59,7 @@ export default function App() {
     name: CONFIG.name,
     giftName: CONFIG.giftName,
     goal: CONFIG.goal,
+    headerTitle: "🛼 민지의 생일 펀딩",
     forLine: "진짜 제발 저요 정말 간절합니다 저 당장 타고 싶습니다",
     thankMsg: CONFIG.thankMsg,
     doneDesc: "인라인으로 성장하는 제 모습을\n지켜봐 주세요",
@@ -368,25 +369,35 @@ export default function App() {
   );
 
   // ─── 관리자 편집 패널 ───
+  const editFields = [
+    { key: "headerTitle",  label: "헤더 타이틀 (이모지 포함)", type: "input" },
+    { key: "name",        label: "이름",           type: "input" },
+    { key: "giftName",    label: "선물 이름",       type: "input" },
+    { key: "goal",        label: "목표 금액 (숫자)", type: "input" },
+    { key: "forLine",     label: "메인 한 줄 멘트", type: "textarea", rows: 2 },
+    { key: "thankMsg",    label: "감사 박스 멘트",  type: "textarea", rows: 2 },
+    { key: "doneDesc",    label: "후원 완료 설명",  type: "textarea", rows: 2 },
+    { key: "thanksTitle", label: "감사 화면 제목",  type: "input" },
+  ];
+
   const EditPanel = () => (
     <div style={s.editPanel}>
       <div style={s.editTitle}>✏️ 편집 모드</div>
-      {[
-        { key: "name",        label: "이름",           type: "input" },
-        { key: "giftName",    label: "선물 이름",       type: "input" },
-        { key: "goal",        label: "목표 금액 (숫자)", type: "input" },
-        { key: "forLine",     label: "메인 한 줄 멘트", type: "textarea", rows: 2 },
-        { key: "thankMsg",    label: "감사 박스 멘트",  type: "textarea", rows: 2 },
-        { key: "doneDesc",    label: "후원 완료 설명",  type: "textarea", rows: 2 },
-        { key: "thanksTitle", label: "감사 화면 제목",  type: "input" },
-      ].map(({ key, label, type, rows }) => (
+      {editFields.map(({ key, label, type, rows }) => (
         <div key={key} style={s.editRow}>
           <div style={s.editLabel}>{label}</div>
           {type === "input"
-            ? <input style={s.editInput} value={editConfig[key]}
-                onChange={e => setEditConfig(p => ({ ...p, [key]: key === "goal" ? Number(e.target.value) : e.target.value }))} />
-            : <textarea style={s.editTextarea} rows={rows} value={editConfig[key]}
-                onChange={e => setEditConfig(p => ({ ...p, [key]: e.target.value }))} />
+            ? <input
+                style={s.editInput}
+                value={editConfig[key]}
+                onChange={e => setEditConfig(p => ({ ...p, [key]: key === "goal" ? Number(e.target.value) : e.target.value }))}
+              />
+            : <textarea
+                style={s.editTextarea}
+                rows={rows}
+                value={editConfig[key]}
+                onChange={e => setEditConfig(p => ({ ...p, [key]: e.target.value }))}
+              />
           }
         </div>
       ))}
@@ -398,8 +409,7 @@ export default function App() {
   if (screen === "main") return (
     <div style={s.wrap}>
       <div style={s.header}>
-        <span style={{ fontSize: 20 }}>🛼</span>
-        <span style={s.headerTitle}>{editConfig.name}의 생일 펀딩</span>
+        <span style={s.headerTitle}>{editConfig.headerTitle}</span>
         <button style={s.adminBtn} onClick={() => adminMode ? setAdminMode(false) : setShowPwModal(true)}>
           {adminMode ? "편집 종료" : "관리자"}
         </button>
