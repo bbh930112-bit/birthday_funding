@@ -52,6 +52,12 @@ const EDIT_FIELDS = [
 ];
 
 function EditPanel({ editConfig, setEditConfig, showToast, styles: s, colors: C }) {
+  function handleSave() {
+    try {
+      localStorage.setItem("editConfig", JSON.stringify(editConfig));
+      showToast("저장 완료!");
+    } catch { showToast("저장 실패!"); }
+  }
   return (
     <div style={s.editPanel}>
       <div style={s.editTitle}>✏️ 편집 모드</div>
@@ -73,7 +79,7 @@ function EditPanel({ editConfig, setEditConfig, showToast, styles: s, colors: C 
           }
         </div>
       ))}
-      <button style={s.editSaveBtn} onClick={() => showToast("저장 완료!")}>저장</button>
+      <button style={s.editSaveBtn} onClick={handleSave}>저장</button>
     </div>
   );
 }
@@ -93,15 +99,22 @@ export default function App() {
   const [adminMode, setAdminMode]         = useState(false);
   const [pwInput, setPwInput]             = useState("");
   const [showPwModal, setShowPwModal]     = useState(false);
-  const [editConfig, setEditConfig]       = useState({
+  const defaultConfig = {
+    headerTitle: "🛼 민지의 생일 펀딩",
     name: CONFIG.name,
     giftName: CONFIG.giftName,
     goal: CONFIG.goal,
-    headerTitle: "🛼 민지의 생일 펀딩",
     forLine: "진짜 제발 저요 정말 간절합니다 저 당장 타고 싶습니다",
     thankMsg: CONFIG.thankMsg,
     doneDesc: "인라인으로 성장하는 제 모습을\n지켜봐 주세요",
     thanksTitle: "이 은혜 잊지 않겠습니다",
+  };
+
+  const [editConfig, setEditConfig] = useState(() => {
+    try {
+      const saved = localStorage.getItem("editConfig");
+      return saved ? { ...defaultConfig, ...JSON.parse(saved) } : defaultConfig;
+    } catch { return defaultConfig; }
   });
 
   const dday        = getDday();
