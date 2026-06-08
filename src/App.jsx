@@ -44,6 +44,7 @@ export default function App() {
   const [screen, setScreen]               = useState("main");
   const [inputAmount, setInputAmount]     = useState("");
   const [name, setName]                   = useState("");
+  const [message, setMessage]             = useState("");
   const [pendingAmount, setPendingAmount] = useState(0);
   const [records, setRecords]             = useState([]);
   const [submitting, setSubmitting]       = useState(false);
@@ -115,9 +116,9 @@ export default function App() {
       await fetch(CONFIG.scriptUrl, {
         method: "POST", mode: "no-cors",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "add", name: name.trim(), amount: pendingAmount }),
+        body: JSON.stringify({ action: "add", name: name.trim(), amount: pendingAmount, message: message.trim() }),
       });
-      setRecords(prev => [...prev, { name: name.trim(), amount: pendingAmount }]);
+      setRecords(prev => [...prev, { name: name.trim(), amount: pendingAmount, message: message.trim() }]);
       setScreen("thanks");
     } catch { showToast("오류가 났어요. 다시 시도해 주세요!"); }
     setSubmitting(false);
@@ -125,10 +126,11 @@ export default function App() {
 
   const s = {
     wrap: {
-      maxWidth: 430, margin: "0 auto", minHeight: "100vh",
+      maxWidth: 430, margin: "0 auto", minHeight: "100dvh",
       background: C.bg,
       fontFamily: "'Pretendard', 'Apple SD Gothic Neo', sans-serif",
       paddingBottom: 56,
+      position: "relative",
     },
 
     /* 헤더 */
@@ -231,7 +233,7 @@ export default function App() {
     },
     input: {
       flex: 1, border: "none", background: "transparent",
-      fontSize: 36, fontWeight: 800, outline: "none",
+      fontSize: "max(16px, 36px)", fontWeight: 800, outline: "none",
       color: C.text, padding: 0,
       fontFamily: "'Pretendard', 'Apple SD Gothic Neo', sans-serif",
     },
@@ -435,23 +437,6 @@ export default function App() {
           </div>
         </div>
       </div>
-
-      {records.length > 0 && (
-        <>
-          <div style={{ height: 20 }} />
-          <div style={s.divider} />
-          <div style={s.participantSection}>
-            <div style={s.sectionLabel}>후원한 친구들 👀</div>
-            {records.map((r, i) => (
-              <div key={i} style={s.recordRow}>
-                <div style={s.recordLeft}>
-                  <div style={s.avatar}>{r.name[0]}</div>
-                  <span style={s.recordName}>{r.name}</span>
-                </div>
-                <span style={s.recordAmt}>{formatWon(r.amount)}</span>
-              </div>
-            ))}
-          </div>
         </>
       )}
 
@@ -495,7 +480,6 @@ export default function App() {
               placeholder="0"
               value={inputAmount}
               onChange={handleAmountInput}
-              autoFocus
             />
             <span style={s.inputWon}>원</span>
           </div>
@@ -534,6 +518,16 @@ export default function App() {
             value={name}
             onChange={e => setName(e.target.value)}
             maxLength={10}
+          />
+        </div>
+        <div style={{ ...s.nameInputWrap, marginBottom: 16 }}>
+          <input
+            style={s.nameInput}
+            type="text"
+            placeholder="생일 축하 한마디 남기기 🎂"
+            value={message}
+            onChange={e => setMessage(e.target.value)}
+            maxLength={30}
           />
         </div>
         <div style={{ marginBottom: 28 }}>
