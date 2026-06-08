@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 const CONFIG = {
   name: "민지",
   giftName: "인라인 스케이트",
-  goal: 359000,
+  goal: 300000,
   birthday: "2026-07-01",
   kakaoLink: "https://qr.kakaopay.com/Ej8Xra0Tq",
-  scriptUrl: "https://script.google.com/macros/s/AKfycbwhaTlgCrgufV17EJYKYKnnMSs_O_EyfhIIdNd8dQzc5BYWkXwJ-BL_oFptmCnSRxPuWw/exec",
+  scriptUrl: "https://script.google.com/macros/s/AKfycbwPK7NFCGXzQz6ay3IKkpdGePI0O5K0ZLuLswq41t6jA-n7-mziahoGVSl9ay_W_r6cvw/exec",
   thankMsg: "후원해 주신다면 성실하고 바르게 자라겠습니다",
 };
 
@@ -57,6 +57,11 @@ function EditPanel({ editConfig, setEditConfig, showToast, styles: s, colors: C 
   function handleSave() {
     try {
       localStorage.setItem("editConfig", JSON.stringify(editConfig));
+      fetch(CONFIG.scriptUrl, {
+        method: "POST", mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "saveConfig", config: editConfig }),
+      });
       showToast("저장 완료!");
     } catch { showToast("저장 실패!"); }
   }
@@ -138,7 +143,20 @@ export default function App() {
     }
   }
 
-  useEffect(() => { fetchRecords(); }, []);
+  useEffect(() => {
+    fetchConfig();
+    fetchRecords();
+  }, []);
+
+  async function fetchConfig() {
+    try {
+      const res = await fetch(`${CONFIG.scriptUrl}?action=getConfig`);
+      const data = await res.json();
+      if (Object.keys(data).length > 0) {
+        setEditConfig(p => ({ ...p, ...data, goal: Number(data.goal) || p.goal }));
+      }
+    } catch {}
+  }
 
   async function fetchRecords() {
     setLoading(true);
