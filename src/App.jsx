@@ -35,7 +35,9 @@ function getDday() {
   return diff;
 }
 function formatWon(n) {
-  return Number(n).toLocaleString("ko-KR") + "원";
+  const num = Number(n);
+  if (isNaN(num) || !isFinite(num)) return "0원";
+  return num.toLocaleString("ko-KR") + "원";
 }
 
 const ADMIN_PW = "5501";
@@ -142,7 +144,7 @@ export default function App() {
     try {
       const res  = await fetch(`${CONFIG.scriptUrl}?action=get`);
       const data = await res.json();
-      setRecords(data || []);
+      setRecords((data || []).filter(r => r.name && Number(r.amount) > 0));
     } catch { setRecords([]); }
     setLoading(false);
   }
@@ -161,7 +163,16 @@ export default function App() {
     const val = parseInt(inputAmount.replace(/,/g, "") || "0");
     if (!val || val < 1) { showToast("금액을 입력해주세요"); return; }
     setPendingAmount(val);
-    window.open(CONFIG.kakaoLink, "_blank");
+    // iOS/Android 카카오페이 딥링크 시도 후 웹으로 폴백
+    const kakaoDeepLink = CONFIG.kakaoLink.replace("https://qr.kakaopay.com/", "kakaopay://qr/");
+    const fallbackLink = CONFIG.kakaoLink;
+    const clickedAt = Date.now();
+    window.location.href = kakaoDeepLink;
+    setTimeout(() => {
+      if (Date.now() - clickedAt < 2000) {
+        window.open(fallbackLink, "_blank");
+      }
+    }, 1500);
     setScreen("done");
   }
 
