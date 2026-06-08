@@ -353,6 +353,8 @@ export default function App() {
         <input
           style={s.modalInput}
           type="password"
+          inputMode="numeric"
+          pattern="[0-9]*"
           placeholder="••••"
           value={pwInput}
           onChange={e => setPwInput(e.target.value)}
