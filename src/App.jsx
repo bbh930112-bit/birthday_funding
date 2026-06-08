@@ -442,7 +442,7 @@ export default function App() {
   // ─── config 로딩 중 ───
   if (configLoading) return (
     <div style={{ ...s.wrap, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ fontSize: 14, color: "#aaa" }}>불러오는 중...</div>
+      <div style={{ fontSize: 14, color: "#aaa" }}>펀딩 접속 중...</div>
     </div>
   );
 
