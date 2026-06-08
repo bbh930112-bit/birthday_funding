@@ -40,6 +40,44 @@ function formatWon(n) {
 
 const ADMIN_PW = "5501";
 
+const EDIT_FIELDS = [
+  { key: "headerTitle",  label: "헤더 타이틀 (이모지 포함)", type: "input" },
+  { key: "name",        label: "이름",                    type: "input" },
+  { key: "giftName",    label: "선물 이름",                type: "input" },
+  { key: "goal",        label: "목표 금액 (숫자)",          type: "input" },
+  { key: "forLine",     label: "메인 한 줄 멘트",           type: "textarea", rows: 2 },
+  { key: "thankMsg",    label: "감사 박스 멘트",            type: "textarea", rows: 2 },
+  { key: "doneDesc",    label: "후원 완료 설명",            type: "textarea", rows: 2 },
+  { key: "thanksTitle", label: "감사 화면 제목",            type: "input" },
+];
+
+function EditPanel({ editConfig, setEditConfig, showToast, styles: s, colors: C }) {
+  return (
+    <div style={s.editPanel}>
+      <div style={s.editTitle}>✏️ 편집 모드</div>
+      {EDIT_FIELDS.map(({ key, label, type, rows }) => (
+        <div key={key} style={s.editRow}>
+          <div style={s.editLabel}>{label}</div>
+          {type === "input"
+            ? <input
+                style={s.editInput}
+                value={editConfig[key]}
+                onChange={e => setEditConfig(p => ({ ...p, [key]: key === "goal" ? Number(e.target.value) : e.target.value }))}
+              />
+            : <textarea
+                style={s.editTextarea}
+                rows={rows}
+                value={editConfig[key]}
+                onChange={e => setEditConfig(p => ({ ...p, [key]: e.target.value }))}
+              />
+          }
+        </div>
+      ))}
+      <button style={s.editSaveBtn} onClick={() => showToast("저장 완료!")}>저장</button>
+    </div>
+  );
+}
+
 export default function App() {
   const [screen, setScreen]               = useState("main");
   const [inputAmount, setInputAmount]     = useState("");
@@ -369,42 +407,6 @@ export default function App() {
   );
 
   // ─── 관리자 편집 패널 ───
-  const editFields = [
-    { key: "headerTitle",  label: "헤더 타이틀 (이모지 포함)", type: "input" },
-    { key: "name",        label: "이름",           type: "input" },
-    { key: "giftName",    label: "선물 이름",       type: "input" },
-    { key: "goal",        label: "목표 금액 (숫자)", type: "input" },
-    { key: "forLine",     label: "메인 한 줄 멘트", type: "textarea", rows: 2 },
-    { key: "thankMsg",    label: "감사 박스 멘트",  type: "textarea", rows: 2 },
-    { key: "doneDesc",    label: "후원 완료 설명",  type: "textarea", rows: 2 },
-    { key: "thanksTitle", label: "감사 화면 제목",  type: "input" },
-  ];
-
-  const EditPanel = () => (
-    <div style={s.editPanel}>
-      <div style={s.editTitle}>✏️ 편집 모드</div>
-      {editFields.map(({ key, label, type, rows }) => (
-        <div key={key} style={s.editRow}>
-          <div style={s.editLabel}>{label}</div>
-          {type === "input"
-            ? <input
-                style={s.editInput}
-                value={editConfig[key]}
-                onChange={e => setEditConfig(p => ({ ...p, [key]: key === "goal" ? Number(e.target.value) : e.target.value }))}
-              />
-            : <textarea
-                style={s.editTextarea}
-                rows={rows}
-                value={editConfig[key]}
-                onChange={e => setEditConfig(p => ({ ...p, [key]: e.target.value }))}
-              />
-          }
-        </div>
-      ))}
-      <button style={s.editSaveBtn} onClick={() => { showToast("저장 완료!"); }}>저장</button>
-    </div>
-  );
-
   // ─── 메인 ───
   if (screen === "main") return (
     <div style={s.wrap}>
@@ -415,7 +417,7 @@ export default function App() {
         </button>
       </div>
       {showPwModal && <PwModal />}
-      {adminMode && <EditPanel />}
+      {adminMode && <EditPanel editConfig={editConfig} setEditConfig={setEditConfig} showToast={showToast} styles={s} colors={C} />}
 
       <div style={s.imgBox}>
         <img src={INLINE_IMG} alt="선물" style={s.img} />
