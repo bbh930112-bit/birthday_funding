@@ -118,9 +118,10 @@ export default function App() {
   });
 
   const dday        = getDday();
-  const total       = records.reduce((s, r) => s + Number(r.amount), 0);
-  const percent     = Math.min(100, Math.round((total / editConfig.goal) * 100));
-  const participants = records.length;
+  const total       = records.reduce((s, r) => s + (Number(r.amount) || 0), 0);
+  const validCount  = records.filter(r => Number(r.amount) > 0).length;
+  const percent     = Math.min(100, Math.round((total / editConfig.goal) * 100)) || 0;
+  const participants = validCount;
 
   function handleAdminLogin() {
     if (pwInput === ADMIN_PW) {
