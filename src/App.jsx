@@ -96,6 +96,7 @@ export default function App() {
   const [submitting, setSubmitting]       = useState(false);
   const [toast, setToast]                 = useState("");
   const [loading, setLoading]             = useState(true);
+  const [showMessages, setShowMessages]   = useState(false);
 
   // 관리자
   const [adminMode, setAdminMode]         = useState(false);
@@ -163,17 +164,8 @@ export default function App() {
     const val = parseInt(inputAmount.replace(/,/g, "") || "0");
     if (!val || val < 1) { showToast("금액을 입력해주세요"); return; }
     setPendingAmount(val);
-    // iOS/Android 카카오페이 딥링크 시도 후 웹으로 폴백
-    const kakaoDeepLink = CONFIG.kakaoLink.replace("https://qr.kakaopay.com/", "kakaopay://qr/");
-    const fallbackLink = CONFIG.kakaoLink;
-    const clickedAt = Date.now();
-    window.location.href = kakaoDeepLink;
-    setTimeout(() => {
-      if (Date.now() - clickedAt < 2000) {
-        window.open(fallbackLink, "_blank");
-      }
-    }, 1500);
     setScreen("done");
+    window.location.href = CONFIG.kakaoLink;
   }
 
   async function handleConfirm() {
@@ -492,6 +484,35 @@ export default function App() {
           선물하기 🎉
         </button>
       </div>
+
+      {records.filter(r => r.message && r.message.trim()).length > 0 && (
+        <div style={{ margin: "16px 16px 0" }}>
+          <button
+            onClick={() => setShowMessages(p => !p)}
+            style={{
+              width: "100%", padding: "14px 16px",
+              background: C.yellowLt, border: `1px solid ${C.yellow}`,
+              borderRadius: showMessages ? "12px 12px 0 0" : 12,
+              fontSize: 14, fontWeight: 700, color: C.text,
+              cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center",
+            }}
+          >
+            <span>🎂 생일 축하 메시지</span>
+            <span>{showMessages ? "▲" : "▼"}</span>
+          </button>
+          {showMessages && records.filter(r => r.message && r.message.trim()).map((r, i, arr) => (
+            <div key={i} style={{
+              background: "#fff", padding: "12px 16px",
+              fontSize: 14, color: C.text, lineHeight: 1.6,
+              border: `1px solid ${C.yellow}`, borderTop: "none",
+              borderRadius: i === arr.length - 1 ? "0 0 12px 12px" : 0,
+            }}>
+              💬 {r.message}
+            </div>
+          ))}
+        </div>
+      )}
+
       {toast && <div style={s.toast}>{toast}</div>}
     </div>
   );
