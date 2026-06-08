@@ -108,22 +108,18 @@ export default function App() {
   const [pwInput, setPwInput]             = useState("");
   const [showPwModal, setShowPwModal]     = useState(false);
   const defaultConfig = {
-    headerTitle: "🛼 민지의 생일 펀딩",
-    name: CONFIG.name,
-    giftName: CONFIG.giftName,
-    goal: CONFIG.goal,
-    forLine: "진짜 제발 저요 정말 간절합니다 저 당장 타고 싶습니다",
-    thankMsg: CONFIG.thankMsg,
-    doneDesc: "인라인으로 성장하는 제 모습을\n지켜봐 주세요",
-    thanksTitle: "이 은혜 잊지 않겠습니다",
+    headerTitle: "",
+    name: "",
+    giftName: "",
+    goal: 0,
+    forLine: "",
+    thankMsg: "",
+    doneDesc: "",
+    thanksTitle: "",
   };
 
-  const [editConfig, setEditConfig] = useState(() => {
-    try {
-      const saved = localStorage.getItem("editConfig");
-      return saved ? { ...defaultConfig, ...JSON.parse(saved) } : defaultConfig;
-    } catch { return defaultConfig; }
-  });
+  const [editConfig, setEditConfig] = useState(defaultConfig);
+  const [configLoading, setConfigLoading] = useState(true);
 
   const dday        = getDday();
   const total       = records.reduce((s, r) => s + (Number(r.amount) || 0), 0);
@@ -156,6 +152,7 @@ export default function App() {
         setEditConfig(p => ({ ...p, ...data, goal: Number(data.goal) || p.goal }));
       }
     } catch {}
+    setConfigLoading(false);
   }
 
   async function fetchRecords() {
@@ -442,6 +439,13 @@ export default function App() {
   );
 
   // ─── 관리자 편집 패널 ───
+  // ─── config 로딩 중 ───
+  if (configLoading) return (
+    <div style={{ ...s.wrap, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ fontSize: 14, color: "#aaa" }}>불러오는 중...</div>
+    </div>
+  );
+
   // ─── 메인 ───
   if (screen === "main") return (
     <div style={s.wrap}>
