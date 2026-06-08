@@ -49,6 +49,7 @@ export default function App() {
   const [records, setRecords]             = useState([]);
   const [submitting, setSubmitting]       = useState(false);
   const [toast, setToast]                 = useState("");
+  const [loading, setLoading]             = useState(true);
 
   // 관리자
   const [adminMode, setAdminMode]         = useState(false);
@@ -84,11 +85,13 @@ export default function App() {
   useEffect(() => { fetchRecords(); }, []);
 
   async function fetchRecords() {
+    setLoading(true);
     try {
       const res  = await fetch(`${CONFIG.scriptUrl}?action=get`);
       const data = await res.json();
       setRecords(data || []);
     } catch { setRecords([]); }
+    setLoading(false);
   }
 
   function showToast(msg) {
@@ -414,28 +417,35 @@ export default function App() {
         </div>
         <div style={s.forLine}>{editConfig.forLine}</div>
 
-        <div style={s.amountRow}>
-          <span style={s.currentAmt}>{formatWon(total)}</span>
-          <span style={s.goalAmt}>목표 {formatWon(editConfig.goal)}</span>
-        </div>
-        <div style={s.progressBg}>
-          <div style={{ ...s.progressFill, width: `${percent}%` }} />
-        </div>
-        <div style={s.statsRow}>
-          <span style={s.statTxt}><span style={s.statBold}>{percent}%</span> 달성</span>
-          <span style={s.statTxt}>참여자 <span style={s.statBold}>{participants}명</span></span>
-        </div>
-
-        <div style={s.subRow}>
-          <div style={s.subBox}>
-            <div style={s.subLabel}>남은 금액</div>
-            <div style={s.subVal}>{formatWon(Math.max(0, editConfig.goal - total))}</div>
+        {loading ? (
+          <div style={{ padding: "20px 0", textAlign: "center", color: C.sub, fontSize: 14 }}>
+            불러오는 중...
           </div>
-          <div style={s.subBox}>
-            <div style={s.subLabel}>평균 참여금액</div>
-            <div style={s.subVal}>{participants > 0 ? formatWon(Math.round(total / participants)) : "—"}</div>
-          </div>
-        </div>
+        ) : (
+          <>
+            <div style={s.amountRow}>
+              <span style={s.currentAmt}>{formatWon(total)}</span>
+              <span style={s.goalAmt}>목표 {formatWon(editConfig.goal)}</span>
+            </div>
+            <div style={s.progressBg}>
+              <div style={{ ...s.progressFill, width: `${percent}%` }} />
+            </div>
+            <div style={s.statsRow}>
+              <span style={s.statTxt}><span style={s.statBold}>{percent}%</span> 달성</span>
+              <span style={s.statTxt}>참여자 <span style={s.statBold}>{participants}명</span></span>
+            </div>
+            <div style={s.subRow}>
+              <div style={s.subBox}>
+                <div style={s.subLabel}>남은 금액</div>
+                <div style={s.subVal}>{formatWon(Math.max(0, editConfig.goal - total))}</div>
+              </div>
+              <div style={s.subBox}>
+                <div style={s.subLabel}>평균 참여금액</div>
+                <div style={s.subVal}>{participants > 0 ? formatWon(Math.round(total / participants)) : "—"}</div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div style={s.mainBtnWrap}>
