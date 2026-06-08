@@ -437,8 +437,6 @@ export default function App() {
           </div>
         </div>
       </div>
-        </>
-      )}
 
       <div style={s.mainBtnWrap}>
         <button style={s.mainBtn} onClick={() => setScreen("amount")}>
