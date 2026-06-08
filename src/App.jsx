@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const CONFIG = {
   name: "민지",
   giftName: "인라인 스케이트",
-  goal: 300000,
+  goal: 359000,
   birthday: "2026-07-01",
   kakaoLink: "https://qr.kakaopay.com/Ej8Xra0Tq",
   scriptUrl: "https://script.google.com/macros/s/AKfycbwhaTlgCrgufV17EJYKYKnnMSs_O_EyfhIIdNd8dQzc5BYWkXwJ-BL_oFptmCnSRxPuWw/exec",
