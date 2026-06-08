@@ -363,9 +363,10 @@ export default function App() {
 
     // 관리자
     adminBtn: {
-      marginLeft: "auto", background: adminMode ? C.blue : C.card,
-      border: "none", borderRadius: 8, padding: "6px 12px",
-      fontSize: 12, fontWeight: 700, color: adminMode ? "#fff" : C.sub,
+      marginLeft: "auto", background: adminMode ? "rgba(255,255,255,0.25)" : "transparent",
+      border: adminMode ? "1.5px solid rgba(255,255,255,0.5)" : "1.5px solid transparent",
+      borderRadius: 8, padding: "6px 12px",
+      fontSize: 12, fontWeight: 700, color: adminMode ? "#fff" : "rgba(255,255,255,0.15)",
       cursor: "pointer",
     },
     modal: {
@@ -503,7 +504,7 @@ export default function App() {
 
       <div style={s.mainBtnWrap}>
         <button style={s.mainBtn} onClick={() => setScreen("amount")}>
-          선물하기 🎉
+          후원하기 🎉
         </button>
       </div>
 
