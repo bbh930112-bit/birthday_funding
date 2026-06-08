@@ -6,7 +6,7 @@ const CONFIG = {
   goal: 300000,
   birthday: "2026-07-01",
   kakaoLink: "https://qr.kakaopay.com/Ej8Xra0Tq",
-  scriptUrl: "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec",
+  scriptUrl: "https://script.google.com/macros/s/AKfycbwhaTlgCrgufV17EJYKYKnnMSs_O_EyfhIIdNd8dQzc5BYWkXwJ-BL_oFptmCnSRxPuWw/exec",
   thankMsg: "후원해 주신다면 성실하고 바르게 자라겠습니다",
 };
 
